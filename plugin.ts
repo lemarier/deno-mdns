@@ -23,7 +23,6 @@ const decoder = new TextDecoder();
 
 function decode(data: Uint8Array): object {
   const text = decoder.decode(data);
-  console.log(text);
   return JSON.parse(text);
 }
 
@@ -74,11 +73,14 @@ export function unload(): void {
 
 // @TODO: expose interface of mdns
 export async function DiscoverAll(params: any): Promise<any> {
-  return unwrapResponse(await opAsync("mdns_discover_all", params));
+  return unwrapResponse(await opAsync("mdns_discover_start", params));
+}
+
+export function DiscoverPool(params?: any): any {
+  return unwrapResponse(opSync("mdns_discover_get", params));
 }
 
 function unwrapResponse<T, R extends MDNSResponse<T>>(response: R): T {
-  console.log(response);
   if (response.err) {
     throw response.err;
   }

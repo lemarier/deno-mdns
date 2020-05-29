@@ -1,6 +1,13 @@
 import {
   DiscoverAll,
+  DiscoverPool
 } from "./plugin.ts";
+
+type IDiscoverParams = {
+  host: string;
+  delay: number;
+  onDeviceFound: Function;
+};
 
 export default class MDNS {
   browser: any;
@@ -16,9 +23,9 @@ export default class MDNS {
     this.actions[action] = fn;
   }
 
-  start() {
+  async start() {
     // register in rust
-    DiscoverAll({
+    await DiscoverAll({
       host: this.host,
       delay: this.delay,
     });
@@ -39,14 +46,24 @@ mdns.on("serviceDown", (service: any) => {
   console.log(service);
 });
 
-mdns.start();
+setInterval(() => {
+  console.log("discov")
+  console.log(DiscoverPool())
+}, 3000)
+
+await mdns.start();
+console.log("im here")
 console.log(mdns.actions);
 
 // stop after 5 sec
 setTimeout(() => {
   mdns.stop();
-}, 50000);
+}, 500000);
 
 setTimeout(() => {
   console.log(mdns);
 }, 1000);
+
+
+
+console.log("waiting....")
